@@ -1,0 +1,12 @@
+---
+- name: Ensure dnf packages are up-to-date
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+    update_cache: yes
+  when: ansible_role_postgres_13_os_update == true
+
+- name: Ensure PostgreSQL 13 dnf module is installed
+  ansible.builtin.dnf:
+    name: '@postgresql:13'
+    state: present

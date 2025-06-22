@@ -1,0 +1,21 @@
+// Folder-specific settings
+//
+// For a full list of overridable settings, and general information on folder-specific settings,
+// see the documentation: https://zed.dev/docs/configuring-zed#settings-files
+{
+  "terminal": {
+    "detect_venv": {
+      "on": {
+        "directories": ["../ansible-shell/ansible_venv"]
+      }
+    }
+  },
+  "languages": {
+    "Ansible": {
+      "format_on_save": "off"
+    },
+    "YAML": {
+      "format_on_save": "off"
+    }
+  }
+}

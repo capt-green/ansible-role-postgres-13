@@ -1,0 +1,5 @@
+{
+    "ansible.python.interpreterPath": "/home/ak/Repos/ansible-shell/ansible_venv/bin/python",
+    "ansible.executionEnvironment.enabled": false,
+    "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix"
+}

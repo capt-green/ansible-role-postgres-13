@@ -1,0 +1,22 @@
+---
+- name: Ensure necessary apt packages are present
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+    autoremove: yes
+  loop:
+    - build-essential  # C compiler & build tools for PostgreSQL
+    - libreadline-dev  # Command line editing in psql
+    - zlib1g-dev       # PostgreSQL compression functionality
+    - libbz2-dev       # pg_dump compression
+    - flex             # SQL lexical analysis
+    - perl             # Test suite and utilities
+    - python3-dev      # Build PostgreSQL Python extensions
+  when: ansible_os_family == "Debian"
+
+- name: Ensure Postgres repo is cloned
+  ansible.builtin.git:
+    repo: https://github.com/postgres/postgres.git
+    dest: /usr/local/src/postgres
+    version: "{{ ansible_role_postgres_13_version }}"
+    depth: 1

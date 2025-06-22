@@ -1,0 +1,44 @@
+---
+- name: Ensure apt packages are up-to-date
+  ansible.builtin.apt:
+    name: "*"
+    state: latest
+    update_cache: yes
+    autoremove: yes
+  when: ansible_role_postgres_13_os_update == true
+
+- name: Ensure prerequisite packages are present
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+
+- name: Ensure apt keyrings directory is present
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+- name: Ensure PostgreSQL signing key is present
+  ansible.builtin.get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /etc/apt/keyrings/postgresql.asc
+    mode: '0644'
+    force: true
+
+- name: Ensure Postgres apt repo is present
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/postgresql.asc] http://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+    state: present
+    filename: postgres
+    update_cache: true
+
+- name: Ensure Postgres 13 packages are installed
+  ansible.builtin.apt:
+    name:
+      - postgresql-13
+      - postgresql-client-13
+      - postgresql-contrib-13
+    state: present

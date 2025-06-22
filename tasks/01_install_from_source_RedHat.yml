@@ -1,0 +1,29 @@
+---
+- name: Ensure necessary dnf packages are present
+  ansible.builtin.dnf:
+    name:
+      - gcc
+      - readline-devel
+      - zlib-devel
+      - bzip2-devel
+      - flex
+      - perl
+      - python3-devel
+    state: present
+    autoremove: yes
+
+# - name: Download PostgreSQL 13 source code
+#   ansible.builtin.get_url:
+#     url: "https://ftp.postgresql.org/pub/source/v{{ postgres_version }}/postgresql-{{ postgres_version }}.tar.gz"
+#     dest: "/tmp/postgresql-{{ postgres_version }}.tar.gz"
+
+# - name: Extract PostgreSQL 13 source code
+#   ansible.builtin.unarchive:
+#     src: "/tmp/postgresql-{{ postgres_version }}.tar.gz"
+#     dest: "/usr/local/src/"
+#     remote_src: yes
+
+# - name: Configure PostgreSQL 13
+#   ansible.builtin.command:
+#     cmd: "./configure --prefix=/usr/local/pgsql"
+#     chdir: "/usr/local/src/postgresql-{{ postgres_version }}"
