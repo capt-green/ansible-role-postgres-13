@@ -1,0 +1,54 @@
+---
+# Time synchronization is critical for database clusters to ensure
+# consistent timestamps across all nodes and prevent clock drift issues
+
+- name: Ensure time synchronization service is installed (RedHat)
+  ansible.builtin.dnf:
+    name:
+      - chrony
+      - tzdata
+    state: present
+
+- name: Configure custom NTP servers for chrony
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony.conf
+    backup: yes
+  when:
+    - ansible_role_postgres_13_ntp_servers is defined
+    - ansible_role_postgres_13_ntp_servers | length > 0
+  notify: restart chrony
+
+- name: Ensure chrony is started and enabled
+  ansible.builtin.systemd:
+    name: chronyd
+    state: started
+    enabled: yes
+
+- name: Wait for time synchronization
+  ansible.builtin.shell: |
+    if command -v timedatectl >/dev/null 2>&1; then
+      # Check if time is synchronized
+      for i in {1..30}; do
+        if timedatectl status | grep -q "System clock synchronized: yes"; then
+          exit 0
+        fi
+        sleep 2
+      done
+      exit 1
+    else
+      # Fallback for systems without timedatectl
+      sleep 5
+    fi
+  changed_when: false
+
+# Verify time sync status
+- name: Check time synchronization status
+  ansible.builtin.command: timedatectl status
+  register: time_sync_status
+  changed_when: false
+
+- name: Display time synchronization status
+  ansible.builtin.debug:
+    var: time_sync_status.stdout_lines
+  when: ansible_role_postgres_13_debug | default(false)
