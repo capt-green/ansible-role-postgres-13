@@ -3,6 +3,8 @@
     that: ansible_os_family in ["RedHat", "Debian"]
     msg: "This role is only supported on RedHat- and Debian-based systems."
 
+- include_tasks: 03_time_sync_{{ ansible_os_family }}.yml
+
 - include_tasks: 01_install_from_package_{{ ansible_os_family }}.yml
   tags: install
   when:
@@ -14,8 +16,6 @@
   when:
     - ansible_role_postgres_13_install_from_source is defined
     - ansible_role_postgres_13_install_from_source == true
-
-- include_tasks: 03_time_sync_{{ ansible_os_family }}.yml
 
 # - include_tasks: 02_setup.yml
 #   tags: setup
